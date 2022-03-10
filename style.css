@@ -1,0 +1,7 @@
+.hidden {
+  display: none;
+}
+
+#forecast-blocks {
+  display: flex;
+}

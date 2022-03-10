@@ -7,6 +7,8 @@ var currentWeather = document.querySelector("#current-weather");
 var latitude;
 var longitude;
 var cityToSearch;
+var currentForecast = document.querySelector("#current-forecast");
+var forecastEl = document.querySelector("#forecast-blocks");
 
 //geolocation call
 function geoLocate(e) {
@@ -40,6 +42,7 @@ function weatherCall(latitude, longitude) {
     })
     .then(function (data) {
       showAnswer(data);
+      showForecast(data);
     })
     .catch(function (err) {
       console.error(err);
@@ -47,7 +50,7 @@ function weatherCall(latitude, longitude) {
 }
 
 function showAnswer(data) {
-  console.log(data);
+  // console.log(data);
   currentWeather.innerHTML = "";
 
   var cityTitle = document.createElement("h2");
@@ -69,4 +72,30 @@ function showAnswer(data) {
   var uvIdEl = document.createElement("p");
   uvIdEl.innerText = `${data.current.uvi} `;
   currentWeather.appendChild(uvIdEl);
+}
+
+function showForecast(data) {
+  forecastEl.textcontent = "";
+  currentForecast.classList.remove("hidden");
+  for (var i = 1; i <= 5; i++) {
+    console.log(data.daily[i]);
+    var cardEl = document.createElement("div");
+    cardEl.classList.add("card");
+    cardEl.style.width = "18rem";
+    cardEl.innerHTML = ` <div class="card-body">
+    <h5 class="card-title">${new Date(data.daily[i].dt * 1000).toLocaleString(
+      "en-US",
+      {
+        weekday: "long",
+      }
+    )}</h5>
+    <img src="https://openweathermap.org/img/w/${
+      data.daily[i].weather[0].icon
+    }.png" />
+    <p class="card-text">${data.daily[i].temp.day}°F</p>
+    <p class="card-text">${data.daily[i].wind_speed}MPH</p>
+    <p class="card-text">${data.daily[i].humidity}%</p>
+  </div>`;
+    forecastEl.append(cardEl);
+  }
 }
